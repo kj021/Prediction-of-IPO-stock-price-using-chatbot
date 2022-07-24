@@ -3,10 +3,11 @@ import telegram
 from telegram.ext import Updater,MessageHandler,Filters
 import emoji
 import os
+from config import api_key,chat_id
 
+print(api_key)
+print(chat_id)
 
-api_key = '5546249421:AAFeBf4yuVufMMs-IZYDm83cqyYAaE9MjtY'
-chat_id = 5575834060
 bot = telegram.Bot(token = api_key)
 BASE_PATH  = os.getcwd()
 
