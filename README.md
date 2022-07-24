@@ -1,4 +1,4 @@
-# Prediction-of-IPO-stock-price-using-chatbot
+# 챗봇을 활용한 공모주 예측 서비스 (Prediction-of-IPO-stock-price-using-chatbot)
 
 
 ## Project
