@@ -1,1 +1,1 @@
-# Prediction-of-IPO-stock-price-using-Telegram-chatbot
+# Prediction-of-IPO-stock-price-using-chatbot
