@@ -16,8 +16,8 @@ info_message = '''다음의 명령어를 입력해주세요.
 - 사진 보기 : 사진
 '''
 def start(update, context):
-bot.sendMessage(chat_id = chat_id,text='안녕하세요 IPO 공모가 예측 봇 Stock-Manager 입니다.') # 채팅방에 입장했을 때, 인사말 
-bot.sendMessage(chat_id=update.effective_chat.id, text=info_message)
+    bot.sendMessage(chat_id = chat_id,text='안녕하세요 IPO 공모가 예측 봇 Stock-Manager 입니다.') # 채팅방에 입장했을 때, 인사말 
+    bot.sendMessage(chat_id=update.effective_chat.id, text=info_message)
 
 
 # bot.sendMessage(chat_id = chat_id,text=info_message)

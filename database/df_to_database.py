@@ -1,0 +1,32 @@
+from pymongo import MongoClient
+import certifi
+from config import MONGO_URL
+import pandas as pd 
+
+DIR = '/Users/seop/Documents/GitHub/Prediction-of-IPO-stock-price-using-chatbot/'
+df = pd.read_csv(DIR+'/data/refined_data.csv')
+print(df.info())
+ca = certifi.where()
+client = MongoClient(MONGO_URL, tlsCAFile=ca)
+# client = MongoClient('localhost', 27017)
+db = client["Ipo"]
+for i in range(5):
+    info = {
+        "기업명" : df.iloc[i]["기업명"],
+        "매출액": float(df.iloc[i]["매출액(백만원)"]),
+        "순이익": float(df.iloc[i]["순이익(백만원)"]),
+        "구주매출": float(df.iloc[i]["구주매출"]),
+        "희망공모가(최저)": float(df.iloc[i]["희망공모가(최저)"]),
+        "희망공모가(최고)": float(df.iloc[i]["희망공모가(최고)"]),
+        "청약경쟁률(:1)": float(df.iloc[i]["청약경쟁률(:1)"]),
+        "희망공모가(최고)": float(df.iloc[i]["희망공모가(최고)"]),
+        "확정공모가": float(df.iloc[i]["확정공모가(원)"]),
+        "경쟁률": float(df.iloc[i]["경쟁률(:1)"]),
+        "의무보유확약": int(df.iloc[i]["의무보유확약(:1)"]),
+        "공모가": int(df.iloc[i]["공모가(원)"]),
+        "시초가": int(df.iloc[i]["시초가(원)"]),
+    }
+    print(info)
+    dpInsert = db.inform.insert_one(info)  # db에 정보 입력
+
+print("finish!")
