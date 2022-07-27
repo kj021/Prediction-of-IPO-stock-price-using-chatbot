@@ -3,7 +3,10 @@ import telegram
 from telegram.ext import Updater,MessageHandler,Filters,CommandHandler
 import emoji
 import os
-from config import api_key,chat_id
+from telegram_bot.config import api_key,chat_id
+from database.stock import StockModel
+from pymongo import MongoClient
+from database.config import MONGO_URL, MONGO_DB_NAME
 
 bot = telegram.Bot(token = api_key)
 BASE_PATH  = os.getcwd()
@@ -11,10 +14,13 @@ BASE_PATH  = os.getcwd()
 info_message = '''다음의 명령어를 입력해주세요.
 
 - 안부 물어보기 : 뭐해
-- 주식 가격 물어보기 : "기업명" + 주식
+- 공모주 가격 물어보기 : 공모주 + "기업명"
 - 차트 보기 : "기업명" + 차트
 - 사진 보기 : 사진
 '''
+client = MongoClient(MONGO_URL)
+db = client['Ipo']
+
 def start(update, context):
     bot.sendMessage(chat_id = chat_id,text='안녕하세요 IPO 공모가 예측 봇 Stock-Manager 입니다.') # 채팅방에 입장했을 때, 인사말 
     bot.sendMessage(chat_id=update.effective_chat.id, text=info_message)
@@ -32,9 +38,15 @@ def handler(update, context):
 
     if '뭐해' in user_text: 
         bot.send_message(chat_id=update.effective_chat.id, text="챗봇에 대해 공부하는 중이에요.") # 답장 보내기
-    elif '주식'in user_text: 
-        cor_name = user_text.split()[0]
-        bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식의 현재 가격은 0000원 입니다.") # 답장 보내기
+    elif '공모주'in user_text: 
+        cor_name = user_text.split()[1]
+
+        if  db.inform.find_one({'기업명': cor_name}):
+            price = db.inform.find_one({'기업명': cor_name})['시초가']
+            bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식의 시초가는 {price}원 입니다.") # 답장 보내기
+        else:
+            bot.send_message(chat_id=update.effective_chat.id, text="수집되지 않은 정보입니다.") # 답장 보내기
+
     elif '차트' in user_text:
         cor_name = user_text.split()[0]
         bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name}주식의 차트를 불러오는 중입니다!")
