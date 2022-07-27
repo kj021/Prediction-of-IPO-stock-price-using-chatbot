@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def get_secret(
@@ -24,4 +24,3 @@ def get_secret(
 MONGO_DB_NAME = get_secret("MONGO_DB_NAME")
 MONGO_URL = get_secret("MONGO_URL")
 
-print(MONGO_DB_NAME)
