@@ -1,4 +1,3 @@
-
 import telegram
 from telegram.ext import Updater,MessageHandler,Filters,CommandHandler
 import emoji
@@ -18,7 +17,7 @@ info_message = '''다음의 명령어를 입력해주세요.
 - 차트 보기 : "기업명" + 차트
 - 사진 보기 : 사진
 '''
-client = MongoClient(MONGO_URL)
+client = MongoClient('localhost', 27017)
 db = client['Ipo']
 
 def start(update, context):

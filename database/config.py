@@ -21,6 +21,7 @@ def get_secret(
         raise EnvironmentError(f"Set the {key} environment variable.")
 
 
-MONGO_DB_NAME = get_secret("MONGO_DB_NAME")
-MONGO_URL = get_secret("MONGO_URL")
+MONGO_DB_NAME = "Ipo"
+
+
 
