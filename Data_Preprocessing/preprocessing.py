@@ -75,7 +75,14 @@ def preprocessing_add_variablecsv(data_added,data1,data):
     final_data = pd.merge(df_inner_join,data1, left_on = '기업명',right_on ='기업명',how='inner')
     final_data.drop('확정공모가',axis = 1)
     final_data.replace('(:1|:|원)','',regex = True, inplace= True)
-    final_data.loc[final_data['구주매출'].str.contains('%') == True,'구주매출'] = 1
+    final_data.loc[final_data['구주매출'].str.contains('100%') == True,'구주매출'] = 1
+    
+    ha = final_data.loc[final_data['구주매출'].str.contains('100%') == False].index
+
+    for i in ha:
+        si = final_data.iloc[i]['구주매출']
+        bal = int(float(si.split('주')[2].split()[0].replace('(','').replace(')','').replace('%','')))
+        final_data.loc[i,'구주매출'] = bal*0.01
     
     final_data['희망공모가(최저)'] = final_data['희망공모가액']
     final_data['희망공모가(최고)'] = final_data['희망공모가액']
