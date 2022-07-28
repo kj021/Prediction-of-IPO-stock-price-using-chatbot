@@ -3,12 +3,11 @@ import certifi
 from config import MONGO_URL
 import pandas as pd 
 
-DIR = '/Users/seop/Documents/GitHub/Prediction-of-IPO-stock-price-using-chatbot/'
+DIR = 'C:/Users/KHS/Desktop/대학교/데이터 청년 캠퍼스/깃허브/Prediction-of-IPO-stock-price-using-chatbot'
 df = pd.read_csv(DIR+'/raw data/refined_data.csv')
 # print(df.info())
-ca = certifi.where()
-client = MongoClient(MONGO_URL, tlsCAFile=ca)
-# client = MongoClient('localhost', 27017)
+
+client = MongoClient('localhost', 27017)
 db = client["Ipo"]
 for i in range(len(df)):
     info = {
@@ -21,7 +20,7 @@ for i in range(len(df)):
         "청약경쟁률": float(df.iloc[i]["청약경쟁률(:1)"]),
         "확정공모가": float(df.iloc[i]["확정공모가(원)"]),
         "경쟁률": float(df.iloc[i]["경쟁률(:1)"]),
-        "의무보유확약": int(df.iloc[i]["의무보유확약(:1)"]),
+        "의무보유확약": float(df.iloc[i]["의무보유확약(:1)"]),
         "공모가": int(df.iloc[i]["공모가(원)"]),
         "시초가": int(df.iloc[i]["시초가(원)"]),
     }
