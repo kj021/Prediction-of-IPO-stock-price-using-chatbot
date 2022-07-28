@@ -11,6 +11,11 @@ from io import BytesIO
 import pickle
 import numpy as np
 from database.config import MONGO_URL, MONGO_DB_NAME
+from Data_Preprocessing.preprocessing import total_preprocessing
+
+
+
+
 
 with open('regression/saved_model.pickle','rb') as f:
     model3 = pickle.load(f)
