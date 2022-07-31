@@ -3,7 +3,7 @@ from telegram.ext import Updater,MessageHandler,Filters,CommandHandler
 import emoji
 import os
 from telegram_bot.config import api_key,chat_id
-from database.stock import StockModel
+
 from pymongo import MongoClient
 from database.config import MONGO_URL, MONGO_DB_NAME
 
@@ -12,12 +12,11 @@ BASE_PATH  = os.getcwd()
 
 info_message = '''다음의 명령어를 입력해주세요.
 
-- 안부 물어보기 : 뭐해
 - 공모주 가격 물어보기 : 공모주 + "기업명"
 - 차트 보기 : "기업명" + 차트
 - 사진 보기 : 사진
 '''
-client = MongoClient('localhost', 27017)
+client = MongoClient(MONGO_URL)
 db = client['Ipo']
 
 def start(update, context):

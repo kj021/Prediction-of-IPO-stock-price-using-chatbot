@@ -30,6 +30,7 @@ info_message = '''다음의 명령어를 입력해주세요.
 - 공모주 가격 물어보기 : 공모주 + "기업명"
 - 차트 보기 : "기업명" + 차트
 - 사진 보기 : 사진
+- 예측 하기 : 예측 + "기업명"
 '''
 client = MongoClient(MONGO_URL)
 db = client['Ipo']
