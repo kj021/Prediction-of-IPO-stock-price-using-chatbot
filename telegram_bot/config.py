@@ -5,8 +5,6 @@ from typing import Optional
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
 def get_secret(
     key: str,
     default_value: Optional[str] = None,
