@@ -4,16 +4,15 @@ from sklearn import preprocessing
 import matplotlib.pyplot as plt
 import re
 def df_rename(data1):
+    
     data1.rename(columns = {'name':'기업명',
         'type': '시장 종류',
         'day': '상장일',
         'now_p': '현재가',
         'gongmo_p': '공모가',
         'sicho_p': '시초가',
-        'first_p': '종가',
-        'corp_cd': '종목코드'}, inplace = True)
+        'first_p': '종가'}, inplace = True)
     return data1
-
 
 def df_rename_final(final_data):
     final_data.rename(columns = {
@@ -29,18 +28,16 @@ def df_rename_final(final_data):
     return final_data
 
 def preprocessing_to_datacsv(data1): # data.csv에 대한 전처리
-    data1 = data1.transpose()
-    data1.rename(columns=data1.iloc[0],inplace = True)
-    data1 = data1.drop(data1.index[0])
-    data1.reset_index(inplace = True)
-    data1.drop('index',axis=1,inplace=True)
-    
+    data1.drop('Unnamed: 0',axis = 1 ,inplace=True)
     data1 = df_rename(data1)
+
+
     #기업명에 스팩이 들어간 경우 제거
     data1 = data1[~data1['기업명'].str.contains('스팩')]
     return data1
 
 def preprocessing_to_benefitcsv(data): # 38com_benefit.csv에 대한 전처리 
+
     data.drop(['Unnamed: 0'], axis = 1,inplace = True)
     data = data.dropna()
     index1 = data[data['의무보유확약'] == '0.00%'].index
@@ -48,9 +45,13 @@ def preprocessing_to_benefitcsv(data): # 38com_benefit.csv에 대한 전처리
     data = data.drop(index1)
     #변수들은 int형으로 바꿀 것이기 때문에 특수문자 제거 
     data.replace('(:1|%|,|:)','',regex = True, inplace= True)
+    # data['시초/공모%(수익률)'].replace(' ','200',inplace=True)
+    print(data['시초/공모%(수익률)'].unique)
+    # data['경쟁률'].replace('',0, inplace= True)
     data.reset_index(inplace = True)
     data.drop('index',axis=1,inplace=True)
     data = data[1:]
+
     data = data.astype({'경쟁률':'float',
                     '의무보유확약': 'float',
                     '시초/공모%(수익률)':'float'})
