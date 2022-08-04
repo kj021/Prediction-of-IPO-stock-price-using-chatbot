@@ -17,7 +17,7 @@ def crawling_38_benefit(BASE_DIR):
     df_dic['시초/공모%(수익률)'] = []
 
 
-    for p in range(1,2+1): # page num
+    for p in range(1,70+1): # page num
     #     print('page : ',p)
         base_url = f'http://www.38.co.kr/html/fund/index.htm?o=nw&page={p}'
         html = ur.urlopen(base_url)

@@ -12,7 +12,7 @@ def crawling_38_basic_info(BASE_DIR):
     df_dic['의무보유확약'] = []
 
 
-    for p in range(1,2+1): # page num
+    for p in range(1,70+1): # page num
         
         base_url = 'http://www.38.co.kr/html/fund/'
         page = f'index.htm?o=r1&page={p}'
