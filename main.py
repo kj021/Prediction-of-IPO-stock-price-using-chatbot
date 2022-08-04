@@ -3,21 +3,26 @@ from telegram.ext import Updater,MessageHandler,Filters,CommandHandler
 import emoji
 import os
 from telegram_bot.config import api_key,chat_id
-from database.stock import StockModel
+from Crawling_38_add import crawling_38_add
+from Crawling_38_basic_info import crawling_38_basic_info
+from Crawling_38_benefit import crawling_38_benefit
+from Crawling_data import crawling_data
 from pymongo import MongoClient
 from database.config import MONGO_URL, MONGO_DB_NAME
+from pathlib import Path
 
 bot = telegram.Bot(token = api_key)
-BASE_PATH  = os.getcwd()
+# BASE_PATH  = os.getcwd()
+BASE_DIR = Path(__file__).resolve().parent
+DIR =  BASE_DIR/'Data_Preprocessing/'
 
 info_message = '''다음의 명령어를 입력해주세요.
 
-- 안부 물어보기 : 뭐해
 - 공모주 가격 물어보기 : 공모주 + "기업명"
 - 차트 보기 : "기업명" + 차트
 - 사진 보기 : 사진
 '''
-client = MongoClient('localhost', 27017)
+client = MongoClient(MONGO_URL)
 db = client['Ipo']
 
 def start(update, context):
@@ -44,7 +49,21 @@ def handler(update, context):
             price = db.inform.find_one({'기업명': cor_name})['시초가']
             bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식의 시초가는 {price}원 입니다.") # 답장 보내기
         else:
+            bot.send_message(chat_id=update.effective_chat.id, text=f"신규 데이터 수집 중 입니다. 조금만 기다려주세요 ...") # 답장 보내기  
+
+            crawling_38_basic_info(BASE_DIR)
+            crawling_38_benefit(BASE_DIR)
+
+            crawling_data(BASE_DIR)
+            crawling_38_add(BASE_DIR)
+
+
+            if db.inform.find_one({'기업명': cor_name}):
+                price = db.inform.find_one({'기업명': cor_name})['시초가']
+                bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식의 시초가는 {price}원 입니다.") # 답장 보내기
+    
             bot.send_message(chat_id=update.effective_chat.id, text="수집되지 않은 정보입니다.") # 답장 보내기
+
 
     elif '차트' in user_text:
         cor_name = user_text.split()[0]

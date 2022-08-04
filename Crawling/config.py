@@ -5,6 +5,8 @@ from typing import Optional
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+
 def get_secret(
     key: str,
     default_value: Optional[str] = None,
@@ -18,8 +20,4 @@ def get_secret(
         if default_value:
             return default_value
         raise EnvironmentError(f"Set the {key} environment variable.")
-
-
-api_key = get_secret("api_key")
-chat_id = get_secret("chat_id")
 
