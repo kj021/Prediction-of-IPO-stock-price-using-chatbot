@@ -30,13 +30,9 @@ def get_next_day(string):
     else:
 
         day = str(after_one_day.day)
-
+        
     after_day = str(after_one_day.year)+'.'+month+'.'+day
-
     return after_day
-
-
-
 
 
 def search_news_url(word,ds):

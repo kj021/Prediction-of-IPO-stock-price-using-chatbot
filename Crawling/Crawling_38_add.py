@@ -16,7 +16,7 @@ def crawling_38_add(BASE_DIR):
   df_dic = {'기업명': [], '매출액': [], '순이익': [], '구주매출':[], '희망공모가액':[], '청약경쟁률':[], '확정공모가':[]}
 
 
-  for p in range(1,2+1): # page num
+  for p in range(1,70+1): # page num
       base_url = 'http://www.38.co.kr/html/fund/'
       page = f'index.htm?o=r1&page={p}'
       html = ur.urlopen(base_url+page)
