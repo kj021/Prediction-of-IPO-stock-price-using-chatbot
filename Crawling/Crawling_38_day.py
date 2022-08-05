@@ -13,7 +13,7 @@ import re
 
 BASE_DIR = Path(__file__).resolve().parent
 
-def crawling_38_add(BASE_DIR):
+def crawling_38_day(BASE_DIR):
 
   un_search = []
 
