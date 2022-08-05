@@ -12,7 +12,7 @@ def crawling_data(BASE_DIR):
     url2 = 'http://www.38.co.kr/chart/chart_page_new.php3?code=' #개별 장외종가 url
 
     dics = defaultdict(list)
-    for n in range(1,3):
+    for n in range(1,70+1):
         
         temp = url+str(n)
         html = ur.urlopen(temp)
