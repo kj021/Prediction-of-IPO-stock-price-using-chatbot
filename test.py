@@ -12,14 +12,14 @@ import pickle
 import numpy as np
 from database.config import MONGO_URL, MONGO_DB_NAME
 from Data_Preprocessing.preprocessing import total_preprocessing
-
-
+from test_crawling import printhello
 
 
 
 with open('regression/saved_model.pickle','rb') as f:
     model3 = pickle.load(f)
 
+printhello()
 
 bot = telegram.Bot(token = api_key)
 BASE_PATH  = os.getcwd()
