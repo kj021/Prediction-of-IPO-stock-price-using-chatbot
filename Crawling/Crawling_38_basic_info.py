@@ -51,6 +51,7 @@ def crawling_38_basic_info(BASE_DIR):
             df_dic['기업명'].append(기업명)
             df_dic['경쟁률'].append(경쟁률)
             df_dic['의무보유확약'].append(의무보유확약)
+            #df_dic['공모청약일'].append(공모청약일)
 
     df = pd.DataFrame(df_dic)
     df.to_csv(BASE_DIR/'crawling_38com.csv')
