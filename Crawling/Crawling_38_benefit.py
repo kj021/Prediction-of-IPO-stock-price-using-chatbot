@@ -27,7 +27,9 @@ def crawling_38_benefit(BASE_DIR):
         else:
             table = table = soup.find_all('tr',bgcolor='#FFFFFF')
         table2 = soup.find_all('tr',bgcolor='#F8F8F8')
+
         for i in table:
+            
             name = i.find('a').text
             benefit = i.find_all('td')[-3].text
             if '%' not in benefit:
