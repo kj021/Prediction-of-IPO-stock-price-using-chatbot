@@ -1,3 +1,4 @@
+
 def crawling_38_add(BASE_DIR):
     
   import pandas as pd
@@ -10,9 +11,9 @@ def crawling_38_add(BASE_DIR):
   from database.config import MONGO_DB_NAME
   from glob import glob
 
+
   un_search = []
-
-
+  
   df_dic = {'기업명': [], '매출액': [], '순이익': [], '구주매출':[], '희망공모가액':[], '청약경쟁률':[], '확정공모가':[]}
 
 
