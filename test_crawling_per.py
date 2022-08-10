@@ -1,9 +1,5 @@
 from Data_Preprocessing.preprocessing_per import total_preprocessing
 import pandas as pd
-from Crawling.Crawling_38_add import crawling_38_add
-from Crawling.Crawling_38_basic_info import crawling_38_basic_info
-from Crawling.Crawling_38_benefit import crawling_38_benefit
-from Crawling.Crawling_data import crawling_data
 # from pymongo import MongoClient
 from database.config import MONGO_URL, MONGO_DB_NAME
 # from pathlib import Path
@@ -36,7 +32,7 @@ def printhello(BEST_DIR):
 
     print(f.head())
     
-    f.to_csv('final_data_per2.csv')
+    f.to_csv('final_data_per3.csv',encoding="utf-8")
 
     print('end crawling',time.time())
     threading.Timer(120,printhello).start() # 100초 
