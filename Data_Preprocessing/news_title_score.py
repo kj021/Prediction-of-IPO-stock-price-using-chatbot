@@ -11,7 +11,7 @@ def get_news_score(DIR):
 
     df_sum=data.groupby("기업명").sum()
     df_sum['count']=data.groupby("기업명")['제목'].count()
-    df_sum['score']=df_sum['label']/df_sum['count']
+    df_sum['score']=round(df_sum['label']/df_sum['count'],3)
 
     df_sum = df_sum.rename(columns={'label': '점수','count':'합계','score':'총점'})
 

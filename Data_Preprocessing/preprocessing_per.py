@@ -59,7 +59,7 @@ def preprocessing_to_benefitcsv(data): # 38com_benefit.csv에 대한 전처리
     data = data[~data['기업명'].str.contains('스팩')]
     return data
 
-def preprocessing_add_variablecsv(data_added,data1,data,data_score):
+def preprocessing_add_variablecsv(data_added,data1,data,data_score,data_per):
     data_added.drop(['Unnamed: 0'], axis = 1,inplace = True)
     
     regex = "\(.*\)|\s-\s.*" 
@@ -74,7 +74,8 @@ def preprocessing_add_variablecsv(data_added,data1,data,data_score):
     data_added = data_added[data_added['희망공모가액'] != '- ~ - 원']
 
     df_inner_join = pd.merge(data_added,data, left_on = '기업명',right_on ='기업명',how='inner')
-    df_inner_join2 = pd.merge(df_inner_join,data_score, left_on = '기업명',right_on ='기업명',how='inner')
+    df_inner_join1 = pd.merge(df_inner_join,data_per, left_on = '기업명',right_on ='기업명',how='inner')
+    df_inner_join2 = pd.merge(df_inner_join1,data_score, left_on = '기업명',right_on ='기업명',how='inner')
     final_data = pd.merge(df_inner_join2,data1, left_on = '기업명',right_on ='기업명',how='inner')
     final_data.drop('확정공모가',axis = 1)
     final_data.replace('(:1|:|원)','',regex = True, inplace= True)
@@ -113,9 +114,10 @@ def preprocessing_add_variablecsv(data_added,data1,data,data_score):
 
     return final_data
 
-def total_preprocessing(data1,data2,data_added,data3):
+def total_preprocessing(data1,data2,data_added,data3,data4):
     data = preprocessing_to_datacsv(data1)
     data_benefit = preprocessing_to_benefitcsv(data2)
-    final_data = preprocessing_add_variablecsv(data_added,data,data_benefit,data3)
+    data4= preprocessing_to_datacsv(data4)
+    final_data = preprocessing_add_variablecsv(data_added,data,data_benefit,data3,data4)
     
     return final_data
