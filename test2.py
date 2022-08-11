@@ -9,11 +9,17 @@ import pickle
 import numpy as np
 from database.predict_database import get_data_csv
 from DART.Search_report import get_find_Report
-from naver_news.news import find_news
+# from naver_news.news import find_news
 from draw_graph.draw import get_graph
-from naver_news.subscribe_news import find_news
-import threading
+# from naver_news.subscribe_news import find_news,Stop_find_news
+from apscheduler.schedulers.blocking import BlockingScheduler
+from naver_news.config import client_id,client_secret
 import time
+import requests
+
+
+
+
 
 
 bot = telegram.Bot(token = api_key)
@@ -65,12 +71,72 @@ def get_price(cor_name):
         
     return price_origin,price,y_predict
 
-subscribe=[]
-reset=0
-flag=0
-reset=0
+old_links=[]    
 
-flag_stop=0
+def find_news():
+    print("111")
+    for row in subscribe:
+        print("-진행중-")
+        result_title=""
+        search_word = row #검색어
+        encode_type = 'json' #출력 방식 json 또는 xml
+        max_display = 1 #출력 뉴스 수
+        sort = 'date' #결과값의 정렬기준 시간순 date, 관련도 순 sim
+        start = 1 # 출력 위치
+        
+        check=0
+
+        dfs=[]
+        url = f"https://openapi.naver.com/v1/search/news.{encode_type}?query={search_word}&display={str(int(max_display))}&start={str(int(start))}&sort={sort}"
+
+        #헤더에 아이디와 키 정보 넣기
+        headers = {'X-Naver-Client-Id' : client_id,
+               'X-Naver-Client-Secret':client_secret
+                }
+
+        #HTTP요청 보내기
+        r = requests.get(url, headers=headers)
+        time.sleep(1)
+        #요청 결과 보기 200 이면 정상적으로 요청 완료 .json -> pandas
+        df=pd.DataFrame(r.json()['items'])
+        news_title=df['originallink'].head(1)
+        
+        
+        global old_links
+       
+
+        # 링크 전처리
+        for i in news_title:
+            data= str(i.replace("</b>","").replace("<b>","").replace("&apos;","").replace("&quot;",""))
+            result_title=data
+            
+            
+        # (구)링크 와 (신)링크 비교
+        for rows in old_links:
+            if result_title == rows:
+                check=1
+                
+        # 메세지 보내기
+        if check==0:
+            bot.send_message(chat_id=1181758634, text=f"{result_title}")
+        
+        
+        for i in news_title:
+            data= str(i.replace("</b>","").replace("<b>","").replace("&apos;","").replace("&quot;",""))
+            old_links.append(data)
+            old_links=list(set(old_links))
+      
+        check=0
+    time.sleep(1)
+    
+subscribe=[]
+# reset=0
+# flag=0
+# reset=0
+
+# flag_stop=0
+
+
 
 def start(update, context):
         
@@ -89,7 +155,6 @@ def start(update, context):
         
 def handler(update, context):
     user_text = update.message.text # 사용자가 보낸 메세지를 user_text 변수에 저장합니다.
-    
 
     if '시초가' in user_text: 
         cor_name = user_text.split()[1]
@@ -177,19 +242,20 @@ def handler(update, context):
         bot.send_message(chat_id=update.effective_chat.id, text=f"<뉴스구독리스트>\n <{cor_name}> 삭제됐습니다.")     
    
     elif user_text=='종료':
-        global flag_stop
-        flag_stop=0
-        print(flag_stop)
+        print("CHECK")
+        sched.remove_job('my_job_id')
+        sched.shutdown()
+        
+       
         
     elif user_text=='시작':
+        sched.start()
         
-        flag_stop=1
-        print(flag_stop) 
-        
-    elif user_text=='수정':
-        global reset
-        reset=1
-        print(flag_stop)      
+            
+    # elif user_text=='수정':
+    #     global reset
+    #     reset=1
+    #     print(flag_stop)      
 
 
    
@@ -203,28 +269,32 @@ updater.dispatcher.add_handler(echo_handler)
 
 updater.start_polling() # 주기적으로 텔레그램 서버에 접속해서 chatbot으로부터 새로운 메세지가 존재하면 받아오는 명령어.
 
-flag_t=0
-print("--------실행중-----\n")
+# flag_t=0
+# print("--------실행중-----\n")
 
-while True:
-    if subscribe!=None and flag_t==0 and flag_stop==1:
-        print("시작")
-        t=threading.Timer(30,find_news(subscribe))
-        t.start()
-        flag_t=1
+# while True:
+#     print(subscribe)
+#     if subscribe!=None and flag_t==0 and flag_stop==1:
+#         print("시작")
+#         t=threading.Timer(3,find_news(subscribe))
+#         t.start()
+#         flag_t=1
     
-    if reset==1 and flag_t==1:
-        print("종료(수정")
-        t.cancel()
-        reset=0
-        flag_t=0
+#     if reset==1 and flag_t==1:
+#         print("종료(수정")
+#         t.cancel()
+#         reset=0
+#         flag_t=0
         
 
-    if flag_t==1 and flag_stop==0:
-        print("종료")
-        t.cancel()
-        flag_t=0 
+#     if flag_t==1 and flag_stop==0:
+#         print("종료")
+#         t.cancel()
+#         flag_t=0 
             
         
-    print(flag_t,flag_stop,reset)
-    time.sleep(2)
+    # print(flag_t,flag_stop,reset)
+    # time.sleep(2)
+
+sched = BlockingScheduler(timezone='Asia/Seoul')
+sched.add_job(find_news, 'interval', seconds = 3, id='my_job_id')
