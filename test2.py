@@ -244,12 +244,12 @@ def handler(update, context):
     elif user_text=='종료':
         print("CHECK")
         sched.remove_job('my_job_id')
-        sched.shutdown()
+        
         
        
         
     elif user_text=='시작':
-        sched.start()
+        sched.add_job(find_news, 'interval', seconds = 3, id='my_job_id')
         
             
     # elif user_text=='수정':
@@ -297,4 +297,4 @@ updater.start_polling() # 주기적으로 텔레그램 서버에 접속해서 ch
     # time.sleep(2)
 
 sched = BlockingScheduler(timezone='Asia/Seoul')
-sched.add_job(find_news, 'interval', seconds = 3, id='my_job_id')
+sched.start()
