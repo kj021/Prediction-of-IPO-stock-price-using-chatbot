@@ -13,9 +13,9 @@ import time
 from datetime import datetime,timedelta
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
-# print(BASE_DIR) 
-# Data Preprocessing
+BASE_DIR = Path(__file__).resolve().parent.parent
+print(BASE_DIR)
+# Prediction-of-IPO-stock-price-using-Telegram-chatbot
 
 def get_before_day(string, day): # 날짜(string)을 기준으로 숫자(day)만큼의 전날을 반환
   date = datetime.strptime(string, '%Y-%m-%d')
@@ -38,9 +38,9 @@ def get_before_day(string, day): # 날짜(string)을 기준으로 숫자(day)만
 def nasdaq_add():
   yf.pdr_override() 
 
-  # final_data_per2 listed_date 컬럼의 제일 첫번째 요소를 가져와야 함.
-  # final_data_per2.csv 불러오기
-  final_data = pd.read_csv(BASE_DIR/'final_data_per2.csv', encoding='utf-8')
+  # after_prepros_youtong.csv의 listed_date 컬럼의 제일 첫번째 요소를 가져와야 함.
+  # after_prepros_youtong.csv 불러오기
+  final_data = pd.read_csv(BASE_DIR/'after_prepros_youtong.csv', encoding='cp949')
   datetime_string =  str(final_data['listed_date'][0])
   datetime_format = "%Y%m%d"
 
@@ -53,10 +53,10 @@ def nasdaq_add():
   data = pdr.get_data_yahoo("^IXIC", start="2006-01-01", end=datetime_result) 
   # 데이터를 갱신하기 위해 end를 변수로 설정
 
-  data.to_csv(BASE_DIR/'output.csv') # 최신 날짜의 나스닥 지수를 가져와야
+  data.to_csv(BASE_DIR/'nasdaq_output.csv') # 최신 날짜의 나스닥 지수를 가져와야
 
   # df로 변환
-  nasdaq_df = pd.read_csv(BASE_DIR/'output.csv')
+  nasdaq_df = pd.read_csv(BASE_DIR/'nasdaq_output.csv')
 
 
   # 컬럼명 변경
@@ -89,9 +89,7 @@ def nasdaq_add():
   for a,b in zip(dic_date, dic_ratio):
     nasdaq_score[a] = b
 
-
-  final_data = pd.read_csv(BASE_DIR/'final_data_per2.csv', encoding='utf-8')
-
+# 기존 파일에 나스닥 컬럼 추가
   final_data['nasdaq_day'] = 0
   final_data['nasdaq_score'] = 0
 
@@ -116,15 +114,12 @@ def nasdaq_add():
           
   # data.rename(columns={'name':'기업명'}, inplace=True)
   final_data.drop(['Unnamed: 0'], axis=1, inplace=True)
-  final_data.drop(['sales', 'profit', 'shares_to_pub', 'sub_rate', 'cor_rate', 'target', 'st_price', 'end_price', 'search_amt', 'obligation', 'trend', 'score', 'sum', 'offer_price', 'h_exp_offer_price', 'l_exp_offer_price', 't_score', 'market_type', 'current_price', 'listed_date', 'nasdaq_day'], axis=1, inplace=True) # nasdaq_score만 append
+  final_data.drop(['nasdaq_day'], axis=1, inplace=True)
 
-  # 최종 데이터 불러오기
-  final = pd.read_csv(BASE_DIR/'final_data_per2.csv', encoding='utf-8')
-  final.drop(['Unnamed: 0'], axis=1, inplace=True)
+  print(final_data)
 
-  nasdaq_add= final.merge(final_data, on='cor_name')
 
-  nasdaq_add.to_csv(BASE_DIR/'nasdaq_add.csv', encoding='utf-8')
+  final_data.to_csv(BASE_DIR/'after_prepros_nasdaq.csv', encoding='cp949')
 
 
 nasdaq_add()
