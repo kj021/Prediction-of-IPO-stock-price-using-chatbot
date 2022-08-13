@@ -23,7 +23,7 @@ def crawling_38_day(BASE_DIR):
             html =  await response.content.read()
 
 
-            df_dic = {'기업명': [], '매출액': [], '순이익': [], '구주매출':[], '희망공모가액':[], '청약경쟁률':[], '확정공모가':[], '수요예측일':[],'청약일':[] } # 0802 뉴스 기사 크롤링을 위한 청약일, 예측일 추가
+            df_dic = {'cor_name': [], 'sales': [], 'profit': [], 'shares_to_pub':[], 'exp_offer_price':[], 'sub_rate':[], 'offer_price':[], 'pre_demand_day':[],'subs_day':[] } # 0802 뉴스 기사 크롤링을 위한 청약일, 예측일 추가
 
 
             cor_soup = bs(html,"html.parser")
@@ -76,15 +76,15 @@ def crawling_38_day(BASE_DIR):
                 청약기간=re.split('~', 청약기간)
                 청약일=청약기간[1] # 2022.07.26~2022.07.27 중 뒤에 날짜만 가져옴
 
-                df_dic['기업명'].append(기업명)
-                df_dic['매출액'].append(매출액)
-                df_dic['순이익'].append(순이익)
-                df_dic['구주매출'].append(구주매출)
-                df_dic['희망공모가액'].append(희망공모가액)
-                df_dic['청약경쟁률'].append(청약경쟁률)
-                df_dic['확정공모가'].append(확정공모가)
-                df_dic['수요예측일'].append(수요예측일)
-                df_dic['청약일'].append(청약일)          
+                df_dic['cor_name'].append(기업명)
+                df_dic['sales'].append(매출액)
+                df_dic['profit'].append(순이익)
+                df_dic['shares_to_pub'].append(구주매출)
+                df_dic['exp_offer_price'].append(희망공모가액)
+                df_dic['sub_rate'].append(청약경쟁률)
+              
+                df_dic['pre_demand_day'].append(수요예측일)
+                df_dic['subs_day'].append(청약일)          
 
             return df_dic
 
@@ -93,7 +93,7 @@ def crawling_38_day(BASE_DIR):
         
         urls = []
 
-        for p in range(1,1+1): # page num
+        for p in range(1,70+1): # page num
             page = f'index.htm?o=r1&page={p}'
             html = ur.urlopen(base_url+page)
             soup = bs(html.read(), "html.parser")
@@ -101,8 +101,8 @@ def crawling_38_day(BASE_DIR):
                 cor_url = base_url + menu['href'][2:]
                 urls.append(cor_url)
 
-
-        async with aiohttp.ClientSession() as session:
+        connector = aiohttp.TCPConnector(force_close=True)
+        async with aiohttp.ClientSession(connector=connector) as session:
             result = await asyncio.gather(*[fetcher(session, url) for url in urls])
 
         return result
@@ -112,21 +112,23 @@ def crawling_38_day(BASE_DIR):
     start = time.time()
     answer = asyncio.run(main())
 
-    dic = {'기업명': [], '매출액': [], '순이익': [], '구주매출':[], '희망공모가액':[], '청약경쟁률':[], '확정공모가':[], '수요예측일':[],'청약일':[] }
+    dic = {'cor_name': [], 'sales': [], 'profit': [], 'shares_to_pub':[], 'exp_offer_price':[], 'sub_rate':[], 'pre_demand_day':[],'subs_day':[] }
 
     for d in answer:
-        dic['기업명'].append(d['기업명'][0])
-        dic['매출액'].append(d['매출액'][0])
-        dic['순이익'].append(d['순이익'][0])
-        dic['구주매출'].append(d['구주매출'][0])
-        dic['희망공모가액'].append(d['희망공모가액'][0])
-        dic['청약경쟁률'].append(d['청약경쟁률'][0])
-        dic['확정공모가'].append(d['확정공모가'][0])
-        dic['수요예측일'].append(d['수요예측일'][0])
-        dic['청약일'].append(d['청약일'][0])
-    
+        if '스팩' in d['cor_name'][0]:
+            continue
 
-    pd.DataFrame(dic).to_csv('crawling_38com.csv',encoding='utf-8-sig')
+        dic['cor_name'].append(d['cor_name'][0])
+        dic['sales'].append(d['sales'][0])
+        dic['profit'].append(d['profit'][0])
+        dic['shares_to_pub'].append(d['shares_to_pub'][0])
+        dic['exp_offer_price'].append(d['exp_offer_price'][0])
+        dic['sub_rate'].append(d['sub_rate'][0])
+        dic['pre_demand_day'].append(d['pre_demand_day'][0])
+        dic['subs_day'].append(d['subs_day'][0])
+       
+
+    pd.DataFrame(dic).to_csv(BASE_DIR/'jiseop_test/crawling_add.csv',encoding='utf-8-sig')
     end = time.time()
 
-    print("crawling_38com.csv done.")
+    print("crawling_add.csv done.")

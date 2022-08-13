@@ -23,6 +23,10 @@ for i in range(len(df)):
         "의무보유확약": float(df.iloc[i]["의무보유확약(:1)"]),
         "공모가": int(df.iloc[i]["공모가(원)"]),
         "시초가": int(df.iloc[i]["시초가(원)"]),
+
+
+
+
     }
     # print(info)
     dpInsert = db.inform.insert_one(info)  # db에 정보 입력
