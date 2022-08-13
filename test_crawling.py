@@ -35,7 +35,7 @@ def printhello():
 
     print(f.head())
     
-    f.to_csv('final_data.csv')
+    f.to_csv('temp.csv')
 
     print('end crawling',time.time())
     threading.Timer(120,printhello).start() # 100초 
