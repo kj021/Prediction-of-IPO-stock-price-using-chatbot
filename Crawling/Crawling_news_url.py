@@ -14,7 +14,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 def get_next_day(string):
     date = datetime.strptime(string, '%Y-%m-%d')
@@ -54,10 +54,10 @@ def search_news_url(word,ds):
 
 
 async def fetch(session, name , url):
-    global df 
+    
     dic = {}
-    dic['기업명'] = []
-    dic['제목'] = []
+    dic['cor_name'] = []
+    dic['title'] = []
 
     async with session.get(url) as response:
         html = await response.text()
@@ -66,60 +66,53 @@ async def fetch(session, name , url):
 
         for tit in title_url:
 
-            dic['기업명'].append(name)
+            dic['cor_name'].append(name)
             title = tit.text
-            dic['제목'].append(title)
-    df = pd.concat([df,pd.DataFrame(dic)])
+            dic['title'].append(title)
+        return dic
 
 
-async def main():
+async def news_main(df):
 
-    global df
+    merge_data = pd.read_csv(BASE_DIR/'after_prepros.csv')
+    
 
-    day_38 = pd.read_csv(BASE_DIR/'Data_Preprocessing/38_day.csv',encoding = 'euc-kr') 
-    refined_data = pd.read_csv(BASE_DIR/'Data_Preprocessing/refined_data_초기파일.csv')
-    merge_data = refined_data.merge(day_38,on='기업명')
+    merge_data = merge_data[['cor_name','pre_demand_day','subs_day']]
 
-    merge_data = merge_data[['기업명','수요예측일','청약일']]
+    length = len(merge_data) 
 
-    length = len(merge_data) # time out 이 발생하여 100개식 잘라서 진행 
-
-    # num = length//100
-
-
-    # for k in range(1,num+1):
-    #     print(k)
     urls = []
 
     s = time.time()
     for i in tqdm.tqdm(range(length)):
 
-        word = merge_data.iloc[i]['기업명']
+        word = merge_data.iloc[i]['cor_name']
 
-        ds = merge_data.iloc[i]['수요예측일']
+        ds = merge_data.iloc[i]['pre_demand_day']
         url_list = search_news_url(word,ds)
         urls+=url_list
 
     async with aiohttp.ClientSession() as session:
-        await asyncio.gather(*[fetch(session, name, url) for name,url in urls])
+        result = await asyncio.gather(*[fetch(session, name, url) for name,url in urls])
         
-            
-            # result_df.to_csv(f'test_to_csv{k}.csv',encoding='utf-8-sig')
+        for dic in result:
+
+            df = pd.concat([df,pd.DataFrame(dic)])
 
         
         # print('l time : ',time.time()-s)
 
-    df.to_csv('news_title.csv',encoding='utf-8-sig')
+    df.to_csv(BASE_DIR/'news_title.csv',encoding='utf-8-sig')
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    df = pd.DataFrame(
-        columns=[
-            "기업명",
-            "제목",
-        ]
-    )
-    start_time = time.time()
-    asyncio.run(main())
-    print('learning time : ',time.time()-start_time)
+#     df = pd.DataFrame(
+#         columns=[
+#             "cor_name",
+#             "title",
+#         ]
+#     )
+#     start_time = time.time()
+#     asyncio.run(news_main())
+#     print('learning time : ',time.time()-start_time)
 
