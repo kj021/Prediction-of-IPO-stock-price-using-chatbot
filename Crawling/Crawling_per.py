@@ -107,11 +107,14 @@ def New_DataFrame():
             count_sum=count_sum+1
         else:
             count_sum=count_sum+1
+       
         
         result.append(round(1-(count_def/count_sum),2))
         
     data_cross['per']=result
+    data_cross['per_final']=data_cross['per'].shift(1)
     data_final=data_cross.loc[::-1]
+    data_final.drop(['per'], axis = 1,inplace = True)
     data_final.drop(['type'], axis = 1,inplace = True)
     data_final.drop(['day'], axis = 1,inplace = True)
     data_final.drop(['gongmo_p'], axis = 1,inplace = True)
@@ -119,7 +122,7 @@ def New_DataFrame():
     data_final.drop(['count'], axis = 1,inplace = True)
     data_final.drop(['quarter'], axis = 1,inplace = True)
     data_final.drop(['year'], axis = 1,inplace = True)
-    data_final = data_final.rename(columns={'name': '기업명','per':'동향'})
+    data_final = data_final.rename(columns={'name': '기업명','per_final':'동향'})
     
     data_final.to_csv('C:/Users/KHS/Desktop/대학교/데이터 청년 캠퍼스/깃허브/Prediction-of-IPO-stock-price-using-chatbot/Data_Preprocessing/Result_per.csv')
 
