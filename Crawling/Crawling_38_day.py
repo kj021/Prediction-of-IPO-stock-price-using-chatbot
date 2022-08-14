@@ -12,7 +12,7 @@ import time
 BASE_DIR = Path(__file__).resolve().parent
 
 def crawling_38_day(BASE_DIR):
-
+    print('tlfgod')
     async def fetcher(session, url):
 
         global df
@@ -115,6 +115,10 @@ def crawling_38_day(BASE_DIR):
     dic = {'cor_name': [], 'sales': [], 'profit': [], 'shares_to_pub':[], 'exp_offer_price':[], 'sub_rate':[], 'pre_demand_day':[],'subs_day':[] }
 
     for d in answer:
+        
+        if len(d['cor_name'])==0:
+            continue
+        
         if '스팩' in d['cor_name'][0]:
             continue
 
@@ -128,7 +132,7 @@ def crawling_38_day(BASE_DIR):
         dic['subs_day'].append(d['subs_day'][0])
        
 
-    pd.DataFrame(dic).to_csv(BASE_DIR/'jiseop_test/crawling_add.csv',encoding='utf-8-sig')
+    pd.DataFrame(dic).to_csv(BASE_DIR/'Crawling/crawling_add.csv',encoding='utf-8-sig')
     end = time.time()
 
     print("crawling_add.csv done.")
