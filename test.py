@@ -12,7 +12,7 @@ import pickle
 import numpy as np
 from database.config import MONGO_URL, MONGO_DB_NAME
 from Data_Preprocessing.preprocessing import total_preprocessing
-from test_crawling import printhello
+from jiseop_test.test_crawling import printhello
 
 
 

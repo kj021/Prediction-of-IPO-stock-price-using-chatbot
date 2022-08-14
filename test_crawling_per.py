@@ -32,12 +32,10 @@ def printhello(BEST_DIR):
 
     print(f.head())
     
-    f.to_csv('final_data_per3.csv',encoding="utf-8")
+    f.to_csv('temp.csv',encoding="CP949")
 
     print('end crawling',time.time())
-    threading.Timer(120,printhello).start() # 100초 
+    threading.Timer(10,printhello(BEST_DIR)).start() # 100초 
 
 
-BEST_DIR="C:/Users/KHS/Desktop/대학교/데이터 청년 캠퍼스/깃허브/Prediction-of-IPO-stock-price-using-chatbot/Data_Preprocessing/"
-printhello(BEST_DIR)
 
