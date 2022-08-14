@@ -36,7 +36,7 @@ subscribe=[]
 old_links=[]    
 
 Flag_toggle=0
-
+chat_id_News=0
 
 # bot.sendMessage(chat_id = chat_id,text=info_message)
 
@@ -113,7 +113,7 @@ def find_news():
                 
         # 메세지 보내기
         if check==0:
-            bot.send_message(chat_id=1181758634, text=f"{result_title}")
+            bot.send_message(chat_id=chat_id_News, text=f"{result_title}")
         
         
         for i in news_title:
@@ -125,12 +125,21 @@ def find_news():
     time.sleep(1)
 
 
-info_message = '''다음의 명령어를 입력해주세요.
+info_message = '''<명령어 종류>
 
-- 안부 물어보기 : 뭐해
-- 공모주 가격 물어보기 : 공모주 + "기업명"
-- 차트 보기 : "기업명" + 차트
-- 사진 보기 : 사진
+- 공시 <검색>
+
+/Search_Dart <기업> <갯수:Default:3>
+
+- 뉴스 <검색>
+
+/Search_News <검색어> <갯수:Default:3>
+
+- 뉴스 <구독>  
+
+/sub <검색어>  : 수시로 가져올 검색어 구독
+/unsub <검색어> : 수시로 가져올 검색어 구독해제
+/News_toggle : 구독알람 시작/종료
 '''
 
 def start(update, context):       
@@ -140,9 +149,13 @@ def start(update, context):
         
 def handler(update, context):
     user_text = update.message.text # 사용자가 보낸 메세지를 user_text 변수에 저장합니다.
-
+    global chat_id_News
+    chat_id_News = update.effective_chat.id
+    print(chat_id_News)
+    
     if '시초가' in user_text: 
         cor_name = user_text.split()[1]
+        
 
         if  db.inform.find_one({'기업명': cor_name}):
             price = db.inform.find_one({'기업명': cor_name})['시초가']
@@ -177,7 +190,7 @@ def handler(update, context):
         bot.send_message(chat_id=update.effective_chat.id, text=f"<{cor_name}>\n공모가:  {price}\n예측 시초가:  {result_price}\n예상 수익률:  {result_per}%")
     
     
-    #다트(검색)
+    #다트(검색) -> 완료
     elif '/Search_Dart' in user_text: 
         # except 발생안함 -> 내부 안에서 변경해야함
         cor_name = user_text.split()[1]

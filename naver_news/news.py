@@ -3,7 +3,9 @@ import pandas as pd
 import collections as co
 from naver_news.config import client_id,client_secret
 
-def find_news(cor_name,count):
+
+def find_news_1(cor_name,count):
+          
     search_word = cor_name #검색어
     encode_type = 'json' #출력 방식 json 또는 xml
     max_display = count #출력 뉴스 수
