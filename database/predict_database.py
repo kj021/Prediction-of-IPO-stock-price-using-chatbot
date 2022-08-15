@@ -3,7 +3,7 @@ import pickle
 from pymongo import MongoClient
 
 client = MongoClient('localhost', 27017)
-db = client['Ipo']
+db = client['Ipo2']
 
 with open('regression/saved_model.pickle','rb') as f:
         model3 = pickle.load(f)

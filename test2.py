@@ -15,8 +15,15 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from naver_news.config import client_id,client_secret
 import time
 import requests
+import asyncio
+# from Crawling.Crawling_main import Crawling_main
 
-
+from Crawling.Crawling_38_basic_info import crawling_38_basic_info
+from Crawling.Crawling_38_day import crawling_38_day
+from Crawling.Crawling_data import crawling_data
+from Crawling.Crawling_data import crawling_data
+from Crawling.Crawling_news_url import news_main
+from Crawling.preprocessing import preprocessing
 
 
 
@@ -25,7 +32,7 @@ bot = telegram.Bot(token = api_key)
 BASE_PATH  = os.getcwd()
 
 client = MongoClient('localhost', 27017)
-db = client['Ipo']
+db = client['Ipo2']
 
 with open('regression/saved_model.pickle','rb') as f:
         model3 = pickle.load(f)
@@ -285,7 +292,53 @@ dispatcher.add_handler(echo_handler)
 
 updater.start_polling() # 주기적으로 텔레그램 서버에 접속해서 chatbot으로부터 새로운 메세지가 존재하면 받아오는 명령어.
 
+def Crawling_main():
+    
+    # 데이터 갱신
+    BASE_DIR = 'C:/Users/KHS/Desktop/대학교/데이터 청년 캠퍼스/깃허브/Prediction-of-IPO-stock-price-using-chatbot/Crawling/'
+    start_time = time.time()
+    print("시작")
+    crawling_38_basic_info(BASE_DIR)
+    crawling_38_day(BASE_DIR)
+    crawling_data(BASE_DIR)
+
+    preprocessing(BASE_DIR)
+    
+
+    df = pd.DataFrame(
+        columns=[
+            "cor_name",
+            "title",
+        ]
+    )
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    asyncio.run(news_main(df))
+    
+    df2 = pd.read_csv(BASE_DIR+'after_prepros1.csv')
+    df2.drop('Unnamed: 0',axis = 1,inplace = True)
+    
+    data=db.inform.find()
+    df_origin=pd.DataFrame(data)
+    df_origin.drop('_id',axis = 1,inplace = True)
+    
+    list_cor_name=[]
+    
+    for i in range(len(df2)):
+        for j in range(len(df_origin)):
+            if df2.iloc[i]['cor_name']==df_origin.iloc[j]['cor_name']:
+                list_cor_name.append(df2.iloc[i]['cor_name'])
+
+    list_cor_name=list(set(list_cor_name))
+    
+    for row in list_cor_name:
+        df2 = df2[~df2['cor_name'].str.contains(row)]
+            
+    print(df2)
+    
+    print("종료")
+    print('learning time : ',time.time()-start_time)
     
 sched = BlockingScheduler(timezone='Asia/Seoul')
+sched.add_job(Crawling_main, 'interval', seconds = 10, id='my_job_id2')
 sched.start()
  
