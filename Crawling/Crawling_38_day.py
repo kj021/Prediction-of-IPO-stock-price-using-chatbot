@@ -93,7 +93,7 @@ def crawling_38_day(BASE_DIR):
         
         urls = []
 
-        for p in range(1,70+1): # page num
+        for p in range(1,54+1): # page num
             page = f'index.htm?o=r1&page={p}'
             html = ur.urlopen(base_url+page)
             soup = bs(html.read(), "html.parser")
@@ -132,7 +132,7 @@ def crawling_38_day(BASE_DIR):
         dic['subs_day'].append(d['subs_day'][0])
        
 
-    pd.DataFrame(dic).to_csv(BASE_DIR/'Crawling/crawling_add.csv',encoding='utf-8-sig')
+    pd.DataFrame(dic).to_csv(BASE_DIR/'Crawling/crawling_add_53.csv',encoding='utf-8-sig')
     end = time.time()
 
     print("crawling_add.csv done.")
