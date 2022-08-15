@@ -74,7 +74,7 @@ async def fetch(session, name , url):
 
 async def news_main(df):
 
-    merge_data = pd.read_csv(BASE_DIR/'Crawling/after_prepros.csv')
+    merge_data = pd.read_csv(BASE_DIR/'after_prepros_53.csv')
     
 
     merge_data = merge_data[['cor_name','pre_demand_day','subs_day']]
@@ -102,7 +102,7 @@ async def news_main(df):
         
         # print('l time : ',time.time()-s)
 
-    df.to_csv(BASE_DIR/'news_title.csv',encoding='utf-8-sig')
+    df.to_csv(BASE_DIR/'news_title_53.csv',encoding='utf-8-sig')
 
 # if __name__ == '__main__':
 
