@@ -66,5 +66,5 @@ def crawling_data(BASE_DIR=None):
         # time.sleep(5)
     # print(dics)
     df = pd.DataFrame(dics)
-    df.to_csv('jiseop_test/data.csv')
+    df.to_csv('Crawling/data.csv')
 crawling_data()

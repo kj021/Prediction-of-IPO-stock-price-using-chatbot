@@ -74,7 +74,7 @@ async def fetch(session, name , url):
 
 async def news_main(df):
 
-    merge_data = pd.read_csv(BASE_DIR/'after_prepros.csv')
+    merge_data = pd.read_csv(BASE_DIR/'Crawling/after_prepros.csv')
     
 
     merge_data = merge_data[['cor_name','pre_demand_day','subs_day']]
