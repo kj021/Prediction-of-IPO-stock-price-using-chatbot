@@ -40,7 +40,7 @@ def nasdaq_add():
 
   # after_prepros_youtong.csv의 listed_date 컬럼의 제일 첫번째 요소를 가져와야 함.
   # after_prepros_youtong.csv 불러오기
-  final_data = pd.read_csv(BASE_DIR/'after_prepros_youtong.csv', encoding='cp949')
+  final_data = pd.read_csv(BASE_DIR/'regression/after_prerpos_get_score.csv', encoding='utf-8-sig')
   datetime_string =  str(final_data['listed_date'][0])
   datetime_format = "%Y%m%d"
 
@@ -119,7 +119,7 @@ def nasdaq_add():
   print(final_data)
 
 
-  final_data.to_csv(BASE_DIR/'after_prepros_nasdaq.csv', encoding='cp949')
+  final_data.to_csv(BASE_DIR/'regression/after_prerpos_get_score.csv', encoding='utf-8-sig')
 
 
 nasdaq_add()
