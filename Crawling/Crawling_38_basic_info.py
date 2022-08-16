@@ -68,7 +68,7 @@ def crawling_38_basic_info(BASE_DIR):
         base_url = 'http://www.38.co.kr/html/fund/'
         urls = []
 
-        for p in range(1,70+1): # page num
+        for p in range(1,54+1): # page num
             page = f'index.htm?o=r1&page={p}'
             html = ur.urlopen(base_url+page)
             soup = bs(html.read(), "html.parser")
@@ -93,16 +93,17 @@ def crawling_38_basic_info(BASE_DIR):
     start = time.time()
     answer = asyncio.run(main())
 
-    print(len(answer))
 
     for d in answer:
-        print(d)
-        dic['cor_name'].append(d['cor_name'][0])
-        dic['cor_rate'].append(d['cor_rate'][0])
-        dic['obligation'].append(d['obligation'][0])
-    
+        try:
+            dic['cor_name'].append(d['cor_name'][0])
+            dic['cor_rate'].append(d['cor_rate'][0])
+            dic['obligation'].append(d['obligation'][0])
+        except:
+            pass
 
-    pd.DataFrame(dic).to_csv(BASE_DIR/"jiseop_test/crawling_38com.csv",encoding='utf-8-sig')
+
+    pd.DataFrame(dic).to_csv(BASE_DIR/"Crawling/crawling_38com_53.csv",encoding='utf-8-sig')
     end = time.time()
     print(end-start)
     print('crawling_38com.csv done.')
