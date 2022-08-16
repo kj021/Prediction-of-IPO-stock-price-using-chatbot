@@ -57,6 +57,7 @@ def crawling_data(BASE_DIR=None):
                 # print(td_list[6])
                 dics['sicho_p'].append(td_list[6].replace(',', ''))  # 시초가
                 dics['profit_percent'].append(td_list[7])
+                dics['first_p'].append(td_list[8].replace(',','')) #첫날 종가
 
                 if dics['sicho_p'] in ['-']:
                     raise Exception('데이터 없음')
