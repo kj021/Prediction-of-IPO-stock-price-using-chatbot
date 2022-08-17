@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
 import numpy as np
-from database.predict_database import get_data_csv
+from database.predict2_database import get2_data_csv
 from DART.Search_report import get_find_Report
 from naver_news.news import find_news_1
-from draw_graph.draw import get_graph
+from draw_graph.draw import get_graph,get2_graph
 from apscheduler.schedulers.blocking import BlockingScheduler
 from naver_news.config import client_id,client_secret
 import time
@@ -32,7 +32,7 @@ bot = telegram.Bot(token = api_key)
 BASE_PATH  = os.getcwd()
 
 client = MongoClient('localhost', 27017)
-db = client['Ipo2']
+db = client['Ipo']
 
 with open('regression/saved_model.pickle','rb') as f:
         model3 = pickle.load(f)
@@ -134,19 +134,27 @@ def find_news():
 
 info_message = '''<명령어 종류>
 
+- 그래프 시각화
+
+    - 전체 데이터 그래프 시각화
+        /chart <기업>
+        
+    - 개별 데이터 그래프 시각화
+        /chart2 <기업> <종류>
+
 - 공시 <검색>
 
-/Search_Dart <기업> <갯수:Default:3>
+    /Search_Dart <기업> <갯수:Default:3>
 
 - 뉴스 <검색>
 
-/Search_News <검색어> <갯수:Default:3>
+    /Search_News <검색어> <갯수:Default:3>
 
 - 뉴스 <구독>  
 
-/sub <검색어>  : 수시로 가져올 검색어 구독
-/unsub <검색어> : 수시로 가져올 검색어 구독해제
-/News_toggle : 구독알람 시작/종료
+    /sub <검색어>  : 수시로 가져올 검색어 구독
+    /unsub <검색어> : 수시로 가져올 검색어 구독해제
+    /News_toggle : 구독알람 시작/종료
 '''
 
 def start(update, context):       
@@ -160,6 +168,8 @@ def handler(update, context):
     chat_id_News = update.effective_chat.id
     print(chat_id_News)
     
+    #############################미구현###################################################################################################################
+    
     if '시초가' in user_text: 
         cor_name = user_text.split()[1]
         
@@ -169,34 +179,54 @@ def handler(update, context):
             bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식의 시초가는 {price}원 입니다.") # 답장 보내기
         else:
             bot.send_message(chat_id=update.effective_chat.id, text="수집되지 않은 정보입니다.") # 답장 보내기
-            
-    elif '차트종류' in user_text:
-       bot.send_message(chat_id=update.effective_chat.id, text=f"1.경쟁률\n2.의무보유확약\n3.청약경쟁률\n4.확정공모가\n")
-       
+        
     
-    elif '차트' in user_text:
+    elif '예측' in user_text:
+            
+        cor_name = user_text.split()[1]
+        price,result_price,result_per=get_price(cor_name)
+        bot.send_message(chat_id=update.effective_chat.id, text=f"<{cor_name}>\n공모가:  {price}\n예측 시초가:  {result_price}\n예상 수익률:  {result_per}%")
+        
+    
+    #####################################################################################################################################################
+    
+    
+    # 그래프 시각화 종류
+    elif '차트종류' in user_text:
+           bot.send_message(chat_id=update.effective_chat.id, text=f"1.경쟁률\n2.의무보유확약\n3.공모가\n4.매출액\n5.순이익")
+           
+    # 방사그래프 차트 구현완료   
+    elif user_text.split()[0]=='/chart':
+        cor_name = user_text.split()[1]
+        
+        bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식의 차트를 불러오는 중입니다!")
+        plt.clf()
+        try:
+            buf,data1,data2,data3,data4,data5,data_len= get2_graph(cor_name)
+            
+            bot.send_photo(chat_id =update.effective_chat.id,photo=buf)
+            bot.send_message(chat_id=update.effective_chat.id, text=f"<{cor_name} 의 컬럼별 순위>\n\n경쟁률 : {data1}/{data_len}등\n\n의무보유확약 : {data2}/{data_len}등\n\n공모가 : {data3}/{data_len}등\n\n매출액 : {data4}/{data_len}등\n\n순이익 : {data5}/{data_len}등")
+            
+        except KeyError:
+            bot.send_message(chat_id=update.effective_chat.id, text="수집되지 않은 정보입니다.")
+     
+    # 각각 그래프 구현 구현완료    
+    elif user_text.split()[0]=='/chart2':
         
         cor_name = user_text.split()[1]
         cor_shape = user_text.split()[2]
             
-        bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name}주식의 차트를 불러오는 중입니다!")
+        bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식의 차트를 불러오는 중입니다!")
         plt.clf()
         
         try:
             buf,rank,rank_sum = get_graph(cor_name,cor_shape)
             
             bot.send_photo(chat_id =update.effective_chat.id,photo=buf)
-            bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name}주식은 전체 데이터의 {rank}/{rank_sum}등입니다.")
+            bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식은 전체 데이터의 {rank}/{rank_sum}등입니다.")
         except KeyError:
             bot.send_message(chat_id=update.effective_chat.id, text="수집되지 않은 정보입니다.")
         
-    elif '예측' in user_text:
-        
-        cor_name = user_text.split()[1]
-        price,result_price,result_per=get_price(cor_name)
-        bot.send_message(chat_id=update.effective_chat.id, text=f"<{cor_name}>\n공모가:  {price}\n예측 시초가:  {result_price}\n예상 수익률:  {result_per}%")
-    
-    
     #다트(검색) -> 완료
     elif '/Search_Dart' in user_text: 
         # except 발생안함 -> 내부 안에서 변경해야함
@@ -314,7 +344,7 @@ def Crawling_main():
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(news_main(df))
     
-    df2 = pd.read_csv(BASE_DIR+'after_prepros1.csv')
+    df2 = pd.read_csv(BASE_DIR+'after_prepros.csv')
     df2.drop('Unnamed: 0',axis = 1,inplace = True)
     
     data=db.inform.find()
@@ -333,12 +363,12 @@ def Crawling_main():
     for row in list_cor_name:
         df2 = df2[~df2['cor_name'].str.contains(row)]
             
-    print(df2)
+    get2_data_csv(df2)
     
     print("종료")
     print('learning time : ',time.time()-start_time)
     
 sched = BlockingScheduler(timezone='Asia/Seoul')
-sched.add_job(Crawling_main, 'interval', seconds = 10, id='my_job_id2')
+sched.add_job(Crawling_main, 'interval', minutes = 10, id='my_job_id2')
 sched.start()
  
