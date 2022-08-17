@@ -15,7 +15,7 @@ def crawling_data(BASE_DIR=None):
     
 
     dics = defaultdict(list)
-    for n in range(1,70+1):
+    for n in range(1,54+1):
         
         temp = url+str(n)
         html = ur.urlopen(temp)
@@ -57,6 +57,7 @@ def crawling_data(BASE_DIR=None):
                 # print(td_list[6])
                 dics['sicho_p'].append(td_list[6].replace(',', ''))  # 시초가
                 dics['profit_percent'].append(td_list[7])
+                dics['first_p'].append(td_list[8].replace(',','')) #첫날 종가
 
                 if dics['sicho_p'] in ['-']:
                     raise Exception('데이터 없음')
@@ -66,5 +67,5 @@ def crawling_data(BASE_DIR=None):
         # time.sleep(5)
     # print(dics)
     df = pd.DataFrame(dics)
-    df.to_csv('jiseop_test/data.csv')
+    df.to_csv('Crawling/data_53.csv')
 crawling_data()

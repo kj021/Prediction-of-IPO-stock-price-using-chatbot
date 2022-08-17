@@ -17,19 +17,22 @@ from preprocessing import preprocessing
 
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+# print(2)
 # crawling_38_basic_info(BASE_DIR)
+# print(1)
 # crawling_38_day(BASE_DIR)
-# crawling_data(BASE_DIR)
+# print(2)
+crawling_data(BASE_DIR)
+print(3)
 # 
-preprocessing()
+# preprocessing()
 
-df = pd.DataFrame(
-    columns=[
-        "cor_name",
-        "title",
-    ]
-)
-start_time = time.time()
-asyncio.run(news_main(df))
-print('learning time : ',time.time()-start_time)
+# df = pd.DataFrame(
+#     columns=[
+#         "cor_name",
+#         "title",
+#     ]
+# )
+# start_time = time.time()
+# asyncio.run(news_main(df))
+# print('learning time : ',time.time()-start_time)
