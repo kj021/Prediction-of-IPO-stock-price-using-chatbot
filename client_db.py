@@ -11,9 +11,6 @@ db2 = client['Ipo2_client']
 def search_id(chat_id_News):
     df = pd.DataFrame(db2.inform.find({},{'_id':False}))
     
-    print(df)	
-    print(chat_id_News)
-
     CHECK=0
     
     for i in range(len(df)):
@@ -21,13 +18,14 @@ def search_id(chat_id_News):
         if df['number_id'][i]==chat_id_News:
             CHECK=1
     
-    print(CHECK)
 
     if CHECK==0:
         print("들어감")
         info={
         "number_id" :chat_id_News,
-        "sub_id" : None
+        "sub_id" : None,
+        "toggle_id" : 0,
+        "old_link_id" : None,
         }
         db2.inform.insert_one(info)
     else:
@@ -125,8 +123,34 @@ def list_sub(chat_id_News):
     bot.send_message(chat_id=chat_id_News, text=f"<뉴스구독리스트>\n\n{Text}")
     
     
+def toggle_sub(chat_id_News):    
     
+    chat_id_News=int(chat_id_News)
+    i_search=0
     
+    df = pd.DataFrame(db2.inform.find({},{'_id':False}))
+    
+    for i in range(len(df)):
+        if df['number_id'][i]==chat_id_News:
+            i_search=i
+        
+    data_re=df.iloc[i_search]['toggle_id']
+    
+    if data_re==0:
+        bot.send_message(chat_id=chat_id_News, text="작업을 시작합니다.")
+        data_re=1
+    else:
+        bot.send_message(chat_id=chat_id_News, text="작업을 중단합니다.")
+        data_re=0
+    
+    db2.inform.update_one(
+        {"number_id" : chat_id_News},
+        {"$set" : {
+            "toggle_id" : data_re
+        }
+        })
+    
+    print("스위치 변경완료")
         
     
     

@@ -47,8 +47,6 @@ def get_graph(cor_name,cor_shape):
         cor_shape1='profit'   
         cor_shape='순이익'
                              
-        
-    print(cor_shape,cor_shape1)
     df['순위']=df[cor_shape1].rank(method='min',ascending=False)
     df=df.sort_values(by=[cor_shape1])
     
@@ -122,6 +120,8 @@ def get2_graph(cor_name):
     print("데이터 랭크순")
     print(data1,data2,data3,data4,data5,data_len)
     
+    
+    
 
 
     #사용할 라벨
@@ -154,7 +154,6 @@ def get2_graph(cor_name):
     df2.drop(['profit'], axis = 1,inplace = True)
     df2.drop(['h_exp_offer_price'], axis = 1,inplace = True)
     
-            
     df2['경쟁률비율']=None
     df2['의무보유확약비율']=None
     df2['공모가비율']=None
@@ -205,9 +204,5 @@ def get2_graph(cor_name):
     buf.seek(0)
     
     
-
-    
-  
     return buf,data1,data2,data3,data4,data5,data_len
 
-# get2_graph('성일하이텍')
