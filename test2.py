@@ -25,14 +25,16 @@ from Crawling.Crawling_data import crawling_data
 from Crawling.Crawling_news_url import news_main
 from Crawling.preprocessing import preprocessing
 
-
+from Crawling_ALL_day import Crawling_day_alarm,push_day_alarm
+from client_db import search_id,insert_sub,delete_sub,list_sub
 
 # 몽고디비,데이터모델,텔레그램 호환
 bot = telegram.Bot(token = api_key)
 BASE_PATH  = os.getcwd()
 
 client = MongoClient('localhost', 27017)
-db = client['Ipo']
+db = client['Ipo2']
+db2 = client['Ipo2_client']
 
 with open('regression/saved_model.pickle','rb') as f:
         model3 = pickle.load(f)
@@ -76,6 +78,7 @@ def get_price(cor_name):
 #뉴스 구독리스트 함수
 
 def find_news():
+    
     
     for row in subscribe:
         print("---------진행중-----------")
@@ -167,6 +170,9 @@ def handler(update, context):
     global chat_id_News
     chat_id_News = update.effective_chat.id
     print(chat_id_News)
+    search_id(chat_id_News)
+    
+    
     
     #############################미구현###################################################################################################################
     
@@ -272,25 +278,21 @@ def handler(update, context):
         
        
     # 뉴스(구독) -> 완료
+    
     elif '/sub' in user_text:
         cor_name = user_text.split()[1]
-        subscribe.append(cor_name)
         
-        bot.send_message(chat_id=update.effective_chat.id, text=f"<뉴스구독리스트>\n <{cor_name}> 추가되었습니다.")
-    
+        insert_sub(chat_id_News,cor_name)
+        
     elif user_text == '/list' :
-        Text2 = "\n".join(subscribe)
-        bot.send_message(chat_id=update.effective_chat.id, text=f"<뉴스구독리스트>\n\n{Text2}")
+        list_sub(chat_id_News)
     
     
     elif '/unsub' in user_text:
         
         cor_name = user_text.split()[1]
-        subscribe.remove(cor_name)
-        print(subscribe)
+        delete_sub(chat_id_News,cor_name)
         
-        bot.send_message(chat_id=update.effective_chat.id, text=f"<뉴스구독리스트>\n <{cor_name}> 삭제됐습니다.")     
-     
            
 #뉴스(구독) 스위치 -> 완료      
 def News_toggle(update, context):       
@@ -367,8 +369,31 @@ def Crawling_main():
     
     print("종료")
     print('learning time : ',time.time()-start_time)
+ 
+def alarm():
     
+    Crawling_day_alarm()
+    result_Text,target_time=push_day_alarm()
+    
+    send_id=[]
+
+    df = pd.DataFrame(db2.inform.find({},{'_id':False}))
+    print(df)
+
+    for i in range(len(df)):
+        send_id.append(int(df['number_id'][i]))
+     
+
+    print("진행중")
+    for row in send_id:
+        print(row)
+        if result_Text=='':
+            bot.send_message(chat_id=row, text=f"<오늘의 공모주 일정정보>\n\n일정: {target_time}\n\n일정이 없습니다!\n")
+        else:
+            bot.send_message(chat_id=row, text=f"<오늘의 공모주 일정정보>\n\n일정: {target_time}\n{result_Text}")
+            
 sched = BlockingScheduler(timezone='Asia/Seoul')
 sched.add_job(Crawling_main, 'interval', minutes = 10, id='my_job_id2')
+sched.add_job(alarm, 'cron',hour=12,minute=1, second=0, id='my_job_id3')
 sched.start()
  
