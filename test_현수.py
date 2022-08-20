@@ -79,27 +79,35 @@ def get_price(cor_name):
 
 info_message = '''<명령어 종류>
 
-- 그래프 시각화
+1. 그래프 시각화
 
     - 전체 데이터 그래프 시각화
-        /chart <기업>
+        명령어 : 종합차트 <기업>
+        
+    - 개별 데이터 그래프 종류 검색
+        명령어 : 차트종류
         
     - 개별 데이터 그래프 시각화
-        /chart2 <기업> <종류>
+        명령어 : 개별차트 <기업> <종류>
 
-- 공시 <검색>
+2. 일정 <알람>
 
-    /Search_Dart <기업> <갯수:Default:3>
+    매일 오전 8시, 당일 공모주 일정을 자동적으로 보냅니다.
 
-- 뉴스 <검색>
+3. 공시 <검색>
 
-    /Search_News <검색어> <갯수:Default:3>
+    명령어 : 공시 <기업> <갯수:Default:3>
 
-- 뉴스 <구독>  
+4. 뉴스 <검색>
 
-    /sub <검색어>  : 수시로 가져올 검색어 구독
-    /unsub <검색어> : 수시로 가져올 검색어 구독해제
-    /News_toggle : 구독알람 시작/종료
+    명령어 : 뉴스 <검색어> <갯수:Default:3>
+
+5. 뉴스 <구독>  
+
+    명령어 : 구독 <검색어>  : 수시로 가져올 검색어 구독
+    명령어 : 구독취소 <검색어> : 수시로 가져올 검색어 구독해제
+    명령어 : 구독리스트 : 구독리스트 확인
+    명령어 : /news_toggle(메뉴) : 구독알람 시작/종료
 '''
 
 def start(update, context):       
@@ -139,11 +147,11 @@ def handler(update, context):
     
     
     # 그래프 시각화 종류
-    elif '차트종류' in user_text:
+    elif user_text.split()[0]=='차트종류':
            bot.send_message(chat_id=update.effective_chat.id, text=f"1.경쟁률\n2.의무보유확약\n3.공모가\n4.매출액\n5.순이익")
            
     # 방사그래프 차트 구현완료   
-    elif user_text.split()[0]=='/chart':
+    elif user_text.split()[0]=='종합차트':
         cor_name = user_text.split()[1]
         
         bot.send_message(chat_id=update.effective_chat.id, text=f"{cor_name} 주식의 차트를 불러오는 중입니다!")
@@ -158,7 +166,7 @@ def handler(update, context):
             bot.send_message(chat_id=update.effective_chat.id, text="수집되지 않은 정보입니다.")
      
     # 각각 그래프 구현 구현완료    
-    elif user_text.split()[0]=='/chart2':
+    elif user_text.split()[0]=='개별차트':
         
         cor_name = user_text.split()[1]
         cor_shape = user_text.split()[2]
@@ -175,7 +183,7 @@ def handler(update, context):
             bot.send_message(chat_id=update.effective_chat.id, text="수집되지 않은 정보입니다.")
         
     #다트(검색) -> 완료
-    elif '/dart' in user_text: 
+    elif user_text.split()[0]=='공시':
         # except 발생안함 -> 내부 안에서 변경해야함
         cor_name = user_text.split()[1]
         cor_name_len = len(user_text.split())
@@ -198,7 +206,7 @@ def handler(update, context):
     
     
     #뉴스(검색) -> 완료
-    elif '/news' in user_text:
+    elif user_text.split()[0]=='뉴스':
         # except 발생안함 -> 내부 안에서 변경해야함
         cor_name = user_text.split()[1]
         cor_name_len = len(user_text.split())
@@ -220,16 +228,16 @@ def handler(update, context):
        
     # 뉴스(구독) -> 완료
     
-    elif '/sub' in user_text:
+    elif user_text.split()[0]=='구독':
         cor_name = user_text.split()[1]
         
         insert_sub(chat_id_News,cor_name)
         
-    elif user_text == '/list' :
+    elif user_text.split()[0]=='구독리스트':
         list_sub(chat_id_News)
     
     
-    elif '/unsub' in user_text:
+    elif user_text.split()[0]=='구독취소':
         
         cor_name = user_text.split()[1]
         delete_sub(chat_id_News,cor_name)
@@ -325,7 +333,7 @@ def alarm():
             bot.send_message(chat_id=row, text=f"<오늘의 공모주 일정정보>\n\n일정: {target_time}\n{result_Text}")
             
 sched = BlockingScheduler(timezone='Asia/Seoul')
-sched.add_job(find_news2, 'interval', seconds = 10, id='my_job_id1')
+sched.add_job(find_news2, 'interval', minutes = 1, id='my_job_id1')
 sched.add_job(Crawling_main, 'interval', minutes = 10, id='my_job_id2')
 sched.add_job(alarm, 'cron',hour=8,minute=0, second=0, id='my_job_id3')
 sched.start()
