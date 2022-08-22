@@ -15,7 +15,7 @@ def crawling_data(BASE_DIR=None):
     
 
     dics = defaultdict(list)
-    for n in range(1,1+1):
+    for n in range(1,53+1):
         
         temp = url+str(n)
         html = ur.urlopen(temp)

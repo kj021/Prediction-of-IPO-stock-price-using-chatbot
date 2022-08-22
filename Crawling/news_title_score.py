@@ -28,6 +28,6 @@ def get_news_score():
     df = pd.read_csv(BASE_DIR/'Crawling/after_prepros.csv').drop('Unnamed: 0',axis = 1)
     df = df.merge(temp_df,on='cor_name')
 
-    df.to_csv(BASE_DIR/'Crawling/after_prerpos_get_score.csv',encoding="utf-8-sig")
+    df.to_csv(BASE_DIR/'Crawling/after_prepros_get_score.csv',encoding="utf-8-sig")
     print('score finish')
 

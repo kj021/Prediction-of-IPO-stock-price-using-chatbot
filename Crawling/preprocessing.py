@@ -12,7 +12,7 @@ def preprocessing():
     df1 = pd.read_csv(BASE_DIR/'crawling_38com.csv')
     del df1['Unnamed: 0']
 
-    df2 = pd.read_csv(BASE_DIR/'data.csv')
+    df2 = pd.read_csv(BASE_DIR/'data.csv').head(20)
     del df2['Unnamed: 0']
     # del df2['offer_price_y'] # 중복 크롤링 해버림 ㄲㅂ ㅠ
 

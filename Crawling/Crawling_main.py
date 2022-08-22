@@ -14,6 +14,7 @@ def test():
     from preprocessing import preprocessing
     from get_title_score import get_title_score2
     from news_title_score import get_news_score
+    from Crawling_per import get_per
 
     from pathlib import Path
     BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +39,8 @@ def test():
 
     get_title_score2()
     get_news_score()
+    get_per()
+    
 
 
 print(1)

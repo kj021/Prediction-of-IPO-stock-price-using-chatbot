@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
-
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
 def get_per():
-    df_new=pd.read_csv('C:/Users/KHS/Desktop/대학교/데이터 청년 캠퍼스/깃허브/Prediction-of-IPO-stock-price-using-chatbot/Crawling/data_53.csv')
+    df_new=pd.read_csv(BASE_DIR/'Crawling/data.csv')
 
     df_new.drop(['Unnamed: 0'], axis = 1,inplace = True)
     df_new.drop(['market_type'], axis = 1,inplace = True)
@@ -70,18 +71,18 @@ def get_per():
                 data_cross.loc[i,"카운트"]=count
                 
             data_cross.loc[i,"총점"]=count_sum+count_def
-            
+    print(result)     
     data_cross['Quater_per']=0
 
     x=-1
-
+    data_cross.reset_index(drop=True,inplace = True)
     for i in range(len(data_cross)):
         if data_cross.iloc[i]["quarter"]==4 and data_cross.iloc[i]["year"]==2009:
             data_cross.loc[i,"Quater_per"]=0
             continue
         elif data_cross.iloc[i]["quarter"]!=data_cross.iloc[i-1]["quarter"]and i!=0:
             x=x+1
-            
+
         data_cross.loc[i,"Quater_per"]=result[x]
         
     data_cross.drop(['listed_date'], axis = 1,inplace = True)
@@ -92,7 +93,7 @@ def get_per():
     data_cross.drop(['year'], axis = 1,inplace = True)
     data_cross.drop(['분기카운트'], axis = 1,inplace = True)
 
-    df=pd.read_csv('C:/Users/KHS/Desktop/대학교/데이터 청년 캠퍼스/깃허브/Prediction-of-IPO-stock-price-using-chatbot/Crawling/data_53.csv')
+    df=pd.read_csv(BASE_DIR/'Crawling/data.csv')
     df.drop(['Unnamed: 0'], axis = 1,inplace = True)
 
     for i in range(len(df)):
@@ -108,8 +109,8 @@ def get_per():
     df_join['year']=df_join['listed_date'].dt.year
 
     df_join=df_join.fillna(method='bfill')
-    df_join.to_csv('C:/Users/KHS/Desktop/Result_per.csv',encoding="CP949")
-    
-
-
-get_per()
+    # print(df_join.columns)
+    df = df_join[['cor_name','Quater_per']]
+    temp = pd.read_csv(BASE_DIR/'Crawling/after_prepros_get_score.csv')
+    merge_df = df.merge(temp,on='cor_name')
+    merge_df.to_csv(BASE_DIR/'Crawling/after_prepros_get_score.csv')
