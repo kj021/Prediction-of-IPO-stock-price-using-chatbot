@@ -15,7 +15,7 @@ def crawling_data(BASE_DIR=None):
     
 
     dics = defaultdict(list)
-    for n in range(1,54+1):
+    for n in range(1,1+1):
         
         temp = url+str(n)
         html = ur.urlopen(temp)
@@ -67,5 +67,5 @@ def crawling_data(BASE_DIR=None):
         # time.sleep(5)
     # print(dics)
     df = pd.DataFrame(dics)
-    df.to_csv('Crawling/data_53.csv')
+    df.to_csv('Crawling/data.csv')
 crawling_data()

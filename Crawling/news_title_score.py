@@ -1,12 +1,9 @@
 import pandas as pd
-
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
 def get_news_score():
     
-
-
-
-    
-    data = pd.read_csv('/Users/seop/Documents/GitHub/Prediction-of-IPO-stock-price-using-chatbot/jiseop_test/after_prepros_label_53.csv')
+    data = pd.read_csv(BASE_DIR/'Crawling/after_prepros_label.csv')
 
     print(data.columns)
     data.drop(['Unnamed: 0'], axis = 1,inplace = True)
@@ -28,12 +25,9 @@ def get_news_score():
 
     temp_df = temp_df .reset_index()
 
-
-
-    df = pd.read_csv('/Users/seop/Documents/GitHub/Prediction-of-IPO-stock-price-using-chatbot/jiseop_test/after_prepros_53.csv').drop('Unnamed: 0',axis = 1)
+    df = pd.read_csv(BASE_DIR/'Crawling/after_prepros.csv').drop('Unnamed: 0',axis = 1)
     df = df.merge(temp_df,on='cor_name')
 
-    df.to_csv('/Users/seop/Documents/GitHub/Prediction-of-IPO-stock-price-using-chatbot/jiseop_test/after_prerpos_get_score.csv',encoding="utf-8-sig")
+    df.to_csv(BASE_DIR/'Crawling/after_prerpos_get_score.csv',encoding="utf-8-sig")
+    print('score finish')
 
-
-get_news_score()
