@@ -20,36 +20,24 @@ def test():
     from pathlib import Path
     BASE_DIR = Path(__file__).resolve().parent.parent
 
-    # crawling_38_basic_info(BASE_DIR)
+    crawling_38_basic_info(BASE_DIR)
 
-    # crawling_38_day(BASE_DIR)
+    crawling_38_day(BASE_DIR)
 
-    # crawling_data(BASE_DIR)
+    crawling_data(BASE_DIR)
 
-    # preprocessing()
+    preprocessing()
 
-    # df = pd.DataFrame(
-    #     columns=[
-    #         "cor_name",
-    #         "title",
-    #     ]
-    # )
-    # start_time = time.time()
-
-    # asyncio.run(news_main(df))
-
-    # get_title_score2()
-    # get_news_score()
-    # get_per()
-    
-    total_df = pd.read_csv(BASE_DIR/'Crawling/after_prepros_get_score.csv')
+    total_df = pd.read_csv(BASE_DIR/'Crawling/after_prepros.csv')
     result = main_search_amt(total_df)
-    print(result.head())
+    result.drop('Unnamed: 0',axis=1,inplace=True)
+    result.to_csv('final.csv')
+    
 
 
 
     
 
 
-print(1)
-test()
+# print(1)
+# test()

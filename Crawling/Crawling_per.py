@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 def get_per():
+
     df_new=pd.read_csv(BASE_DIR/'Crawling/data.csv')
 
     df_new.drop(['Unnamed: 0'], axis = 1,inplace = True)
@@ -111,6 +112,6 @@ def get_per():
     df_join=df_join.fillna(method='bfill')
     # print(df_join.columns)
     df = df_join[['cor_name','Quater_per']]
-    temp = pd.read_csv(BASE_DIR/'Crawling/after_prepros_get_score.csv')
+    temp = pd.read_csv(BASE_DIR/'Crawling/after_prepros.csv')
     merge_df = df.merge(temp,on='cor_name')
-    merge_df.to_csv(BASE_DIR/'Crawling/after_prepros_get_score.csv')
+    merge_df.to_csv(BASE_DIR/'Crawling/after_prepros.csv')
