@@ -5,7 +5,7 @@ from telegram.ext import Updater,MessageHandler,Filters,CommandHandler
 from naver_news.config import client_id,client_secret
 import requests
 import telegram
-from telegram_bot.config import api_key,chat_id
+from telegram_bot.config import api_key
 
 client = MongoClient('localhost', 27017)
 db2 = client['Ipo2_client']
@@ -37,7 +37,7 @@ def find_news2():
                 search_word = row #검색어
                 encode_type = 'json' #출력 방식 json 또는 xml
                 max_display = 1 #출력 뉴스 수
-                sort = 'date' #결과값의 정렬기준 시간순 date, 관련도 순 sim
+                sort = 'sim' #결과값의 정렬기준 시간순 date, 관련도 순 sim
                 start = 1 # 출력 위치
                 
                 check=0
@@ -85,7 +85,7 @@ def find_news2():
                     id_old_link=list(set(id_old_link))
                 
                 if len(id_old_link)>=15:
-                    del id_old_link[6:14]
+                    del id_old_link[0:8]
                        
                 db2.inform.update_one(
                 {"number_id" : id_name},

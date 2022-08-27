@@ -12,7 +12,6 @@ import time
 BASE_DIR = Path(__file__).resolve().parent
 
 def crawling_38_day(BASE_DIR):
-    print('tlfgod')
     async def fetcher(session, url):
 
         global df
@@ -101,7 +100,7 @@ def crawling_38_day(BASE_DIR):
                 cor_url = base_url + menu['href'][2:]
                 urls.append(cor_url)
 
-        connector = aiohttp.TCPConnector(force_close=True)
+        connector = aiohttp.TCPConnector(force_close=True,limit=60)
         async with aiohttp.ClientSession(connector=connector) as session:
             result = await asyncio.gather(*[fetcher(session, url) for url in urls])
 

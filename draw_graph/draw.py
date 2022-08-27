@@ -91,15 +91,10 @@ def get2_graph(cor_name):
             
     # 필요컬럼외 지우기
     df2.drop(['market_type'], axis = 1,inplace = True)
-    df2.drop(['listed_date'], axis = 1,inplace = True)
     df2.drop(['sicho_p'], axis = 1,inplace = True)
-    # df2.drop(['profit_percent'], axis = 1,inplace = True)
     df2.drop(['shares_to_pub'], axis = 1,inplace = True)
-    # df2.drop(['sub_rate'], axis = 1,inplace = True)
     df2.drop(['pre_demand_day'], axis = 1,inplace = True)
-    df2.drop(['subs_day'], axis = 1,inplace = True)
-    df2.drop(['l_exp_offer_price'], axis = 1,inplace = True)
-    df2.drop(['sicho_exp'], axis = 1,inplace = True)
+    df2.drop(['sicho_predict'], axis = 1,inplace = True)
     
     # TEXT
     df3=pd.DataFrame(df2)
@@ -138,13 +133,16 @@ def get2_graph(cor_name):
     fig.set_facecolor('white')
 
 
+
     df2['경쟁률']=df2['cor_rate'].rank(method='min',ascending=True)
     df2['의무보유확약']=df2['obligation'].rank(method='min',ascending=True)
     df2['공모가']=df2['offer_price'].rank(method='min',ascending=True)
     df2['매출액']=df2['sales'].rank(method='min',ascending=True)
     df2['순이익']=df2['profit'].rank(method='min',ascending=True)
     # df2['희망공모가(상단)']=df2['h_exp_offer_price'].rank(method='min',ascending=False)
+    
 
+    
     df2.drop(['cor_rate'], axis = 1,inplace = True)
     df2.drop(['obligation'], axis = 1,inplace = True)
     df2.drop(['offer_price'], axis = 1,inplace = True)
@@ -152,7 +150,6 @@ def get2_graph(cor_name):
     df2.drop(['sales'], axis = 1,inplace = True)
     df2.drop(['sub_rate'], axis = 1,inplace = True)
     df2.drop(['profit'], axis = 1,inplace = True)
-    df2.drop(['h_exp_offer_price'], axis = 1,inplace = True)
     
     df2['경쟁률비율']=None
     df2['의무보유확약비율']=None
@@ -164,15 +161,25 @@ def get2_graph(cor_name):
     for row in labels:
         for i in range(len(df2)):
             data_count=df2.loc[i,row]
-            df2.loc[i,row+'비율']=round(100*(data_count/462),2) 
+            df2.loc[i,row+'비율']=round(100*(data_count/len(df2)),2) 
     
     df2.drop(['경쟁률'], axis = 1,inplace = True)
     df2.drop(['의무보유확약'], axis = 1,inplace = True)
     df2.drop(['공모가'], axis = 1,inplace = True)
     df2.drop(['매출액'], axis = 1,inplace = True)
     df2.drop(['순이익'], axis = 1,inplace = True)
+    df2.drop(['score'], axis = 1,inplace = True)
+    df2.drop(['Quater_per'], axis = 1,inplace = True)
+    df2.drop(['search_amt'], axis = 1,inplace = True)
+    df2.drop(['first_p'], axis = 1,inplace = True)
+    df2.drop(['nasdaq_score'], axis = 1,inplace = True)
+    df2.drop(['offer_label'], axis = 1,inplace = True)
+    df2.drop(['Year'], axis = 1,inplace = True)
+    df2.drop(['Month'], axis = 1,inplace = True)
     # df2.drop(['희망공모가(상단)'], axis = 1,inplace = True) 
-     
+    
+
+  
     plt.style.use('default')   
     plt.rc('font', family='NanumGothic')
 

@@ -109,6 +109,8 @@ def preprocessing_add_variablecsv(data_added,data1,data,data_score,data_per):
                      '청약경쟁률(:1)': 'float',
                      })
     final_data.drop('확정공모가(원)',axis = 1)
+    final_data.drop('시장 종류',axis = 1,inplace = True)
+    
 
 
 

@@ -5,11 +5,12 @@ from naver_news.config import client_id,client_secret
 
 
 def find_news_1(cor_name,count):
-          
+    
+    print(cor_name)      
     search_word = cor_name #검색어
     encode_type = 'json' #출력 방식 json 또는 xml
     max_display = count #출력 뉴스 수
-    sort = 'date' #결과값의 정렬기준 시간순 date, 관련도 순 sim
+    sort = 'sim' #결과값의 정렬기준 시간순 date, 관련도 순 sim
     start = 1 # 출력 위치
 
     dfs=[]
