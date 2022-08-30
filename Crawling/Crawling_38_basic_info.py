@@ -68,7 +68,7 @@ def crawling_38_basic_info(BASE_DIR):
         base_url = 'http://www.38.co.kr/html/fund/'
         urls = []
 
-        for p in range(1,54+1): # page num
+        for p in range(1,1+1): # page num
             page = f'index.htm?o=r1&page={p}'
             html = ur.urlopen(base_url+page)
             soup = bs(html.read(), "html.parser")
@@ -77,7 +77,7 @@ def crawling_38_basic_info(BASE_DIR):
                 cor_url = base_url + menu['href'][2:]
                 # print(cor_url)
                 urls.append(cor_url)
-        connector = aiohttp.TCPConnector(force_close=True)
+        connector = aiohttp.TCPConnector(force_close=True,limit=60)
         async with aiohttp.ClientSession(connector=connector) as session:
             result = await asyncio.gather(*[fetcher(session, url) for url in urls])
 
@@ -103,7 +103,7 @@ def crawling_38_basic_info(BASE_DIR):
             pass
 
 
-    pd.DataFrame(dic).to_csv(BASE_DIR/"Crawling/crawling_38com_53.csv",encoding='utf-8-sig')
+    pd.DataFrame(dic).to_csv(BASE_DIR/"Crawling/crawling_38com.csv",encoding='utf-8-sig')
     end = time.time()
     print(end-start)
     print('crawling_38com.csv done.')

@@ -24,7 +24,7 @@ def find_news(subscribe):
         search_word = row #검색어
         encode_type = 'json' #출력 방식 json 또는 xml
         max_display = 1 #출력 뉴스 수
-        sort = 'date' #결과값의 정렬기준 시간순 date, 관련도 순 sim
+        sort = 'sim' #결과값의 정렬기준 시간순 date, 관련도 순 sim
         start = 1 # 출력 위치
         
         check=0
